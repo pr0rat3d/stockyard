@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockYard Build Roadmap</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Georgia, 'Palatino Linotype', serif;
+    background: #f2ede3;
+    color: #161412;
+    padding: 24px 16px 48px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 32px;
+  }
+  .logo {
+    width: 44px; height: 44px; background: #1a3328; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-inner {
+    width: 30px; height: 30px; background: #c8831a; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 13px; color: #fff; font-family: Georgia, serif;
+  }
+  .app-name { font-size: 22px; font-weight: 900; color: #1a3328; }
+  .app-sub  { font-size: 12px; color: #6b7067; margin-top: 2px; font-family: sans-serif; }
+
+  .phase {
+    border-radius: 20px; padding: 22px 20px; margin-bottom: 6px;
+    position: relative;
+  }
+  .phase-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+  }
+  .badge {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 14px; flex-shrink: 0;
+  }
+  .phase-title { font-size: 17px; font-weight: 900; }
+  .phase-sub   { font-size: 12px; margin-top: 2px; font-family: sans-serif; }
+  .items { display: flex; flex-direction: column; gap: 8px; }
+  .item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; line-height: 1.4; font-family: sans-serif;
+  }
+  .item-dot {
+    width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 900; margin-top: 1px;
+  }
+
+  /* Phase 1 — done, teal */
+  .p1 { background: #e1f5ee; border: 1.5px solid #5dcaa5; }
+  .p1 .badge  { background: #1a3328; color: #5ecb8a; }
+  .p1 .phase-title { color: #085041; }
+  .p1 .phase-sub   { color: #0f6e56; }
+  .p1 .item-dot    { background: #3da86e22; color: #085041; }
+
+  /* Phase 2 — in progress, gold */
+  .p2 { background: #faeeda; border: 1.5px solid #c8831a; }
+  .p2 .badge  { background: #c8831a; color: #fff; }
+  .p2 .phase-title { color: #633806; }
+  .p2 .phase-sub   { color: #854f0b; }
+  .p2 .item-dot    { background: #c8831a22; color: #633806; }
+
+  /* Phase 3 — next, purple */
+  .p3 { background: #f0effd; border: 1.5px solid #afa9ec; }
+  .p3 .badge  { background: #534ab7; color: #fff; }
+  .p3 .phase-title { color: #3c3489; }
+  .p3 .phase-sub   { color: #534ab7; }
+  .p3 .item-dot    { background: #534ab722; color: #3c3489; }
+
+  /* Phase 4 — future, coral */
+  .p4 { background: #faece7; border: 1.5px solid #f0997b; }
+  .p4 .badge  { background: #993c1d; color: #fff; }
+  .p4 .phase-title { color: #4a1b0c; }
+  .p4 .phase-sub   { color: #993c1d; }
+  .p4 .item-dot    { background: #d85a3022; color: #4a1b0c; }
+
+  .connector {
+    width: 2px; height: 20px; background: #c8c4ba;
+    margin: 0 auto 6px; border-radius: 1px;
+  }
+
+  .status-row {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px;
+  }
+  .chip {
+    font-size: 11px; font-weight: 700; padding: 4px 10px;
+    border-radius: 999px; font-family: sans-serif;
+  }
+  .chip-done  { background: #3da86e22; color: #085041; }
+  .chip-built { background: #c8831a22; color: #633806; }
+  .chip-next  { background: #534ab722; color: #3c3489; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo"><div class="logo-inner">SY</div></div>
+  <div>
+    <div class="app-name">StockYard</div>
+    <div class="app-sub">Full build roadmap · June 2026</div>
+  </div>
+</div>
+
+<!-- Phase 1 -->
+<div class="phase p1">
+  <div class="phase-header">
+    <div class="badge">✓</div>
+    <div>
+      <div class="phase-title">Phase 1 — App shell</div>
+      <div class="phase-sub">React · Vercel · USDA mock data · StockYard branding</div>
+    </div>
+  </div>
+  <div class="items">
+    <div class="item"><div class="item-dot">✓</div><span>Full React app — all 14 pages, field-optimized UX</span></div>
+    <div class="item"><div class="item-dot">✓</div><span>Dark forest green + gold branding, Georgia serif</span></div>
+    <div class="item"><div class="item-dot">✓</div><span>All 6 calculators (Valuation, Gestation, Weight, Hay, Trucking, Price My Cow)</span></div>
+    <div class="item"><div class="item-dot">✓</div><span>Supabase Edge Function for USDA AMS API proxy</span></div>
+    <div class="item"><div class="item-dot">✓</div><span>Vercel deployment guide + env var setup</span></div>
+  </div>
+  <div class="status-row">
+    <span class="chip chip-done">StockYard.jsx ✓</span>
+    <span class="chip chip-done">supabase-edge-function.ts ✓</span>
+    <span class="chip chip-done">DEPLOYMENT.md ✓</span>
+  </div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Phase 2 -->
+<div class="phase p2">
+  <div class="phase-header">
+    <div class="badge">⚡</div>
+    <div>
+      <div class="phase-title">Phase 2 — Auth + Marketplace</div>
+      <div class="phase-sub">Supabase Auth · listings DB · messages · favorites · auction directory</div>
+    </div>
+  </div>
+  <div class="items">
+    <div class="item"><div class="item-dot">✓</div><span>Complete Supabase schema — all tables, RLS, indexes, seed data</span></div>
+    <div class="item"><div class="item-dot">✓</div><span>Full data layer — auth, listings, messages, favorites, bids</span></div>
+    <div class="item"><div class="item-dot">✓</div><span>Auth screens — sign in, sign up, guest browse</span></div>
+    <div class="item"><div class="item-dot">✓</div><span>4-step Post Listing form with camera photo upload</span></div>
+    <div class="item"><div class="item-dot">✓</div><span>Real-time messaging with Supabase Realtime</span></div>
+    <div class="item"><div class="item-dot">✓</div><span>Auction barn directory + upcoming sales + claim flow</span></div>
+    <div class="item"><div class="item-dot">→</div><span>Wire it all into StockYard.jsx (next step)</span></div>
+    <div class="item"><div class="item-dot">→</div><span>Price alerts + push notifications</span></div>
+    <div class="item"><div class="item-dot">→</div><span>User profile page + seller reputation</span></div>
+  </div>
+  <div class="status-row">
+    <span class="chip chip-built">schema.sql ✓</span>
+    <span class="chip chip-built">supabase.js ✓</span>
+    <span class="chip chip-built">AuthContext.jsx ✓</span>
+    <span class="chip chip-built">Auth.jsx ✓</span>
+    <span class="chip chip-built">PostListing.jsx ✓</span>
+    <span class="chip chip-built">Messaging.jsx ✓</span>
+    <span class="chip chip-built">AuctionDirectory.jsx ✓</span>
+    <span class="chip chip-next">Integration → next</span>
+  </div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Phase 3 -->
+<div class="phase p3">
+  <div class="phase-header">
+    <div class="badge">3</div>
+    <div>
+      <div class="phase-title">Phase 3 — Price alerts + Profiles</div>
+      <div class="phase-sub">Push notifications · seller reputation · saved searches</div>
+    </div>
+  </div>
+  <div class="items">
+    <div class="item"><div class="item-dot">→</div><span>Price alert engine — notify when $/cwt hits threshold</span></div>
+    <div class="item"><div class="item-dot">→</div><span>User profile pages + seller verification</span></div>
+    <div class="item"><div class="item-dot">→</div><span>Saved searches with email / push notifications</span></div>
+    <div class="item"><div class="item-dot">→</div><span>Auction results history pulled from USDA AMS</span></div>
+    <div class="item"><div class="item-dot">→</div><span>Regional auction map (Mapbox or Google Maps)</span></div>
+    <div class="item"><div class="item-dot">→</div><span>Sale calendar with add-to-calendar for barn sales</span></div>
+  </div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Phase 4 -->
+<div class="phase p4">
+  <div class="phase-header">
+    <div class="badge">4</div>
+    <div>
+      <div class="phase-title">Phase 4 — Proxy bidding</div>
+      <div class="phase-sub">Stripe escrow · licensed agent network · eBay for cattle</div>
+    </div>
+  </div>
+  <div class="items">
+    <div class="item"><div class="item-dot">→</div><span>Set max bid on upcoming physical auction sales</span></div>
+    <div class="item"><div class="item-dot">→</div><span>Licensed agent bids on your behalf in the ring</span></div>
+    <div class="item"><div class="item-dot">→</div><span>Real-time bid updates via Supabase Realtime</span></div>
+    <div class="item"><div class="item-dot">→</div><span>Stripe escrow — funds held until delivery confirmed</span></div>
+    <div class="item"><div class="item-dot">→</div><span>Transport coordination + trucking partner network</span></div>
+    <div class="item"><div class="item-dot">→</div><span>Brand inspection + state compliance workflow</span></div>
+    <div class="item"><div class="item-dot">→</div><span>Full digital auctions (Phase 4b — longer horizon)</span></div>
+  </div>
+</div>
+
+</body>
+</html>
