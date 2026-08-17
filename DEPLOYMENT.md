@@ -108,63 +108,19 @@ Find more at: https://marsapi.ams.usda.gov/services/v1.2/reports
 
 ---
 
-## 7. Supabase Tables to Add (for Phase 2)
+## 7. Supabase Tables
 
-When you're ready to add user listings, saved favorites, and messages:
+Run `supabase/schema.sql` in Dashboard → SQL Editor → New query → Run. It
+creates every table the app actually queries (`profiles`, `listings`,
+`favorites`, `conversations`, `messages`, `price_alerts`,
+`usda_price_cache`), a trigger that auto-creates a `profiles` row on
+signup, and working RLS policies for all of it — see `supabase/README.md`
+for details. Safe to re-run.
 
-```sql
--- Listings
-create table listings (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references auth.users,
-  title text not null,
-  head int,
-  weight_avg int,
-  price_per_cwt decimal,
-  category text,  -- Feeder, Stocker, Breeding
-  location text,
-  state text,
-  notes text,
-  status text default 'active',  -- active, sold, expired
-  created_at timestamptz default now()
-);
-
--- Favorites
-create table favorites (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references auth.users,
-  listing_id uuid references listings,
-  created_at timestamptz default now()
-);
-
--- Messages
-create table messages (
-  id uuid default gen_random_uuid() primary key,
-  from_user uuid references auth.users,
-  to_user uuid references auth.users,
-  listing_id uuid references listings,
-  body text,
-  read boolean default false,
-  created_at timestamptz default now()
-);
-
--- Auction directory
-create table auction_barns (
-  id uuid default gen_random_uuid() primary key,
-  name text,
-  location text,
-  state text,
-  sale_day text,  -- "Every Tuesday"
-  website text,
-  phone text,
-  verified boolean default false
-);
-
--- Row Level Security (important!)
-alter table listings enable row level security;
-alter table favorites enable row level security;
-alter table messages enable row level security;
-```
+An `auction_barns` table isn't included: the Auctions screen still renders
+from mock data (`MOCK_AUCTIONS`/`MOCK_BARNS` in `App.js`) and has no
+Supabase query yet, so there's nothing to back it with until that screen
+is wired up.
 
 ---
 

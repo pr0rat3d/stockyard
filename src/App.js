@@ -269,17 +269,28 @@ function useUsdaPrices() {
     let cancelled = false;
     (async () => {
       try {
-        // Cap the network round-trip so a slow/unreachable cache can't stall the UI.
-        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 3000));
-        const { data } = await Promise.race([
-          supabase.from("usda_price_cache")
-            .select("*").eq("report_type","feeder_stocker")
-            .order("report_date",{ascending:false}).limit(1).maybeSingle(),
+        // cattle-prices proxies the live USDA API, so give it more room than a
+        // plain DB read before falling back — but still cap it so a slow or
+        // undeployed function can't stall the UI.
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 6000));
+        const { data, error } = await Promise.race([
+          supabase.functions.invoke("cattle-prices"),
           timeout,
         ]);
-        if (!cancelled) setPrices(data?.data ?? FALLBACK_PRICES);
+        if (cancelled) return;
+        if (error) throw error;
+        setPrices(data?.data ?? FALLBACK_PRICES);
       } catch {
-        if (!cancelled) setPrices(FALLBACK_PRICES);
+        // Edge function not deployed yet, unreachable, or timed out — fall back
+        // to the cached table (works even without the function), then mock data.
+        try {
+          const { data } = await supabase.from("usda_price_cache")
+            .select("data").eq("report_type","feeder_stocker")
+            .order("report_date",{ascending:false}).limit(1).maybeSingle();
+          if (!cancelled) setPrices(data?.data ?? FALLBACK_PRICES);
+        } catch {
+          if (!cancelled) setPrices(FALLBACK_PRICES);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }

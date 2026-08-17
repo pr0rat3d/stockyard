@@ -1,4 +1,14 @@
-# StockYard — Supabase Edge Functions
+# StockYard — Supabase Setup
+
+## 1. Database schema
+
+Run `schema.sql` once in Dashboard → SQL Editor → New query → Run. It creates
+every table the app queries (`profiles`, `listings`, `favorites`,
+`conversations`, `messages`, `price_alerts`, `usda_price_cache`), a trigger
+that auto-creates a `profiles` row on signup, and RLS policies for all of it.
+Safe to re-run — every statement is idempotent.
+
+## 2. Edge functions
 
 Three functions, deployed independently:
 
@@ -6,9 +16,7 @@ Three functions, deployed independently:
 - `functions/usda-daily-sync` — cron job that refreshes the price cache daily.
 - `functions/check-price-alerts` — triggered by `usda-daily-sync` after each refresh; emails users whose alerts fire.
 
-See `../DEPLOYMENT.md` for the full walkthrough. Quick reference:
-
-## Deploy
+### Deploy
 
 ```bash
 supabase login
@@ -18,23 +26,23 @@ supabase functions deploy usda-daily-sync
 supabase functions deploy check-price-alerts
 ```
 
-## Secrets
+### Secrets
 
 ```bash
 supabase secrets set USDA_API_KEY=your_usda_key
 supabase secrets set RESEND_API_KEY=your_resend_key   # optional, for price-alert emails — resend.com
 ```
 
-## Schedule the daily sync
+### Schedule the daily sync
 
 Supabase Dashboard → Edge Functions → `usda-daily-sync` → Schedule
 Cron: `0 15 * * 1-5` (3pm UTC = 10am CT, Mon–Fri, after USDA publishes daily reports)
 
-## Realtime
+## 3. Realtime
 
 Supabase Dashboard → Database → Replication → enable for `messages`, `conversations`.
 
-## Storage (listing photos)
+## 4. Storage (listing photos)
 
 Dashboard → Storage → New bucket → name `stockyard-images`, public, 10MB max, MIME types `image/jpeg, image/png, image/webp, image/heic`.
 
@@ -51,11 +59,4 @@ create policy "Users can delete own images"
   using (bucket_id = 'stockyard-images' and auth.uid()::text = (storage.foldername(name))[2]);
 ```
 
-## RPC used by listing detail views
-
-```sql
-create or replace function increment_views(listing_id uuid)
-returns void language sql as $$
-  update listings set views = views + 1 where id = listing_id;
-$$;
-```
+Not created yet — the app doesn't upload listing photos today, so skip this until that feature exists.
