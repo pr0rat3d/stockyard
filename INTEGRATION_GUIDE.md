@@ -130,12 +130,17 @@ and tracks triggered alerts, it just won't send anything without these two secre
 
 ---
 
-## Step 8 — Schedule the daily USDA sync
+## Step 8 — Don't schedule the daily USDA sync (yet)
 
-In Supabase Dashboard:
-1. Edge Functions → usda-daily-sync → Schedule
-2. Add schedule with cron: `0 15 * * 1-5`
-   (3pm UTC = 10am CT, Monday–Friday — USDA publishes by then)
+USDA's national cattle-price summary reports (slugs 3231, 3233) turn out to be
+PDF-only bulletins with no structured JSON data behind them via the MARS API —
+confirmed on mymarketnews.ams.usda.gov, where those reports show "Market: Non Mars
+Location" and no `[DATA]` tag, unlike reports tied to an actual market. So
+`usda-daily-sync` will fail every time it runs — scheduling it just runs a
+repeatedly-failing job for no benefit. See `supabase/README.md` for the full
+writeup and what a real fix would look like (aggregating individual active
+stockyard reports instead of the national summary). The app already falls back
+to polished mock data when the cache is empty, so nothing user-facing breaks.
 
 ---
 

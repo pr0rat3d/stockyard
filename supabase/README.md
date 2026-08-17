@@ -39,10 +39,25 @@ supabase secrets set GMAIL_APP_PASSWORD=your_16_char_app_password
 Without these two secrets set, `check-price-alerts` still runs and tracks triggered alerts —
 it just skips sending the email.
 
-### Schedule the daily sync
+### ⚠️ Known limitation: USDA has no live national cattle-price API data
 
-Supabase Dashboard → Edge Functions → `usda-daily-sync` → Schedule
-Cron: `0 15 * * 1-5` (3pm UTC = 10am CT, Mon–Fri, after USDA publishes daily reports)
+`cattle-prices` and `usda-daily-sync` deploy and run fine (auth against the USDA API
+works), but the actual report they need — "National Daily Feeder & Stocker Summary"
+(slug 3231) and its weekly equivalent (slug 3233) — is published by USDA as a **PDF
+bulletin only**. It has no structured JSON data behind it via the MARS API
+(confirmed on mymarketnews.ams.usda.gov: the report page shows "Market: Non Mars
+Location" and no `[DATA]` tag, unlike reports tied to an actual market). Individual
+stockyard/auction reports *do* have real API data, but each only covers one local
+market, and most of the ones checked haven't published in years.
+
+Net effect: `usda-daily-sync` will fail every time it runs (500, can't fetch data that
+doesn't exist), so **don't schedule its cron** — it'd just be a repeatedly-failing job.
+The app already falls back gracefully to polished mock data (`useUsdaPrices` in
+`src/App.js`) when the cache table is empty, so this doesn't break anything user-facing.
+
+Revisit only if a real project needs actual live prices — the realistic path then is
+aggregating several currently-active individual stockyard reports (which do have
+`[DATA]` API access) rather than the national summary.
 
 ## 3. Realtime
 
