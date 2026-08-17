@@ -486,7 +486,7 @@ function Listings({ onNav }) {
   const isDesktop = useIsDesktop();
   const [listings, setListings] = useState(MOCK_LISTINGS);
   const [cat, setCat] = useState("All");
-  const [state, setState] = useState("All");
+  const state = "All"; // no UI control to change this filter yet
   const [search, setSearch] = useState("");
 
   const cats = ["All","Feeder","Stocker","Breeding","Slaughter"];
@@ -580,7 +580,7 @@ function PostListing({ onBack, onSuccess }) {
   async function submit() {
     if (!form.title || !form.head) { setErr("Title and head count required"); return; }
     setSubmitting(true);
-    const { data, error } = await supabase.from("listings").insert({
+    const { error } = await supabase.from("listings").insert({
       ...form, head:parseInt(form.head)||0,
       weight_avg:form.weight_avg?parseInt(form.weight_avg):null,
       price_per_cwt:form.price_per_cwt?parseFloat(form.price_per_cwt):null,
@@ -673,7 +673,7 @@ function Auctions() {
   const isDesktop = useIsDesktop();
   const gridCols = isDesktop ? "repeat(auto-fill,minmax(340px,1fr))" : "1fr";
   const [view, setView] = useState("upcoming");
-  const [barns, setBarns] = useState(MOCK_BARNS);
+  const barns = MOCK_BARNS; // not wired to Supabase yet — see supabase/README.md
   const [selectedBarn, setSelectedBarn] = useState(null);
 
   const upcoming = MOCK_AUCTIONS.filter(a=>a.status==="upcoming");
@@ -970,7 +970,7 @@ function PriceAlerts() {
   useEffect(()=>{
     if (!isAuth) return;
     supabase.from("price_alerts").select("*").eq("user_id",user.id).then(({data})=>{ if(data) setAlerts(data); });
-  },[isAuth]);
+  },[isAuth, user?.id]);
 
   async function addAlert() {
     if (!form.price_below && !form.price_above) return;
@@ -1042,11 +1042,11 @@ function Messages() {
   const [text, setText] = useState("");
   const bottomRef = useRef(null);
 
-  useEffect(()=>{ if(isAuth) loadConvs(); },[isAuth]);
-  async function loadConvs(){
+  const loadConvs = useCallback(async () => {
     const {data}=await supabase.from("conversations").select("*,listing:listing_id(id,title),buyer:buyer_id(id,full_name),seller:seller_id(id,full_name)").or(`buyer_id.eq.${user.id},seller_id.eq.${user.id}`).order("last_message_at",{ascending:false});
     if(data) setConvs(data);
-  }
+  }, [user?.id]);
+  useEffect(()=>{ if(isAuth) loadConvs(); },[isAuth, loadConvs]);
   async function openConv(conv){
     setActive(conv);
     const {data}=await supabase.from("messages").select("*,sender:sender_id(id,full_name)").eq("conversation_id",conv.id).order("created_at",{ascending:true});
@@ -1145,7 +1145,7 @@ function Favorites() {
   useEffect(()=>{
     if(!isAuth) return;
     supabase.from("favorites").select("*,listings(id,title,head,weight_avg,price_per_cwt,price_per_head,category,location_city,location_state,created_at,profiles:user_id(full_name))").eq("user_id",user.id).order("created_at",{ascending:false}).then(({data})=>{ if(data) setFavs(data); });
-  },[isAuth]);
+  },[isAuth, user?.id]);
   if(!isAuth) return <Page><PageTitle title="Favorites"/><div style={{textAlign:"center",padding:"50px 20px",color:C.muted}}><div style={{fontSize:48,marginBottom:12}}>❤️</div><div style={{fontWeight:800,fontSize:17,color:C.text,marginBottom:6}}>Sign in required</div></div></Page>;
   return (
     <Page>
