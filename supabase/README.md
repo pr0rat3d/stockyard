@@ -14,7 +14,7 @@ Three functions, deployed independently:
 
 - `functions/cattle-prices` — on-demand USDA AMS price proxy, called from the app.
 - `functions/usda-daily-sync` — cron job that refreshes the price cache daily.
-- `functions/check-price-alerts` — triggered by `usda-daily-sync` after each refresh; emails users whose alerts fire.
+- `functions/check-price-alerts` — triggered by `usda-daily-sync` after each refresh; emails every triggered alert to `st0yardapp@gmail.com` via Gmail SMTP.
 
 ### Deploy
 
@@ -30,8 +30,14 @@ supabase functions deploy check-price-alerts
 
 ```bash
 supabase secrets set USDA_API_KEY=your_usda_key
-supabase secrets set RESEND_API_KEY=your_resend_key   # optional, for price-alert emails — resend.com
+supabase secrets set GMAIL_USER=st0yardapp@gmail.com          # optional — skip to disable alert emails
+supabase secrets set GMAIL_APP_PASSWORD=your_16_char_app_password
 ```
+
+`GMAIL_APP_PASSWORD` is not your normal Gmail password. On the sending account: turn on
+2-Step Verification, then Google Account → Security → App Passwords → generate one for "Mail".
+Without these two secrets set, `check-price-alerts` still runs and tracks triggered alerts —
+it just skips sending the email.
 
 ### Schedule the daily sync
 

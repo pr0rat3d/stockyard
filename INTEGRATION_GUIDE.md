@@ -88,19 +88,13 @@ npm install -g supabase
 supabase login
 supabase link --project-ref YOUR_PROJECT_REF
 
-# Create function directories
-mkdir -p supabase/functions/cattle-prices
-mkdir -p supabase/functions/usda-daily-sync
-mkdir -p supabase/functions/check-price-alerts
-
-# Copy the function files (extract from the ts files provided)
-# cattle-prices: from phase1/supabase-edge-function.ts
-# usda-daily-sync: from phase3/edge-functions.ts (FILE 1 block)
-# check-price-alerts: from phase3/edge-functions.ts (FILE 2 block)
+# The function code already lives in supabase/functions/ in this repo —
+# nothing to create or copy, just deploy.
 
 # Add secrets
 supabase secrets set USDA_API_KEY=your_usda_key_here
-supabase secrets set RESEND_API_KEY=your_resend_key_here
+supabase secrets set GMAIL_USER=st0yardapp@gmail.com          # optional — skip to disable alert emails
+supabase secrets set GMAIL_APP_PASSWORD=your_16_char_app_password
 
 # Deploy all three
 supabase functions deploy cattle-prices
@@ -121,14 +115,18 @@ supabase functions deploy check-price-alerts
 
 ---
 
-## Step 7 — Get your Resend API key (2 minutes, free)
+## Step 7 — Set up Gmail SMTP for price-alert emails (2 minutes, free, optional)
 
-Resend sends the price alert emails. Free tier = 100 emails/day, plenty to start.
+`check-price-alerts` emails every triggered alert to `st0yardapp@gmail.com` via that
+account's own SMTP server — no third-party email service needed.
 
-1. Go to https://resend.com → Sign Up
-2. Create an API Key
-3. `supabase secrets set RESEND_API_KEY=your_key`
-4. (Optional) Add your domain for a branded `from` address
+1. On the `st0yardapp@gmail.com` account: turn on 2-Step Verification
+2. Google Account → Security → App Passwords → generate one for "Mail"
+3. `supabase secrets set GMAIL_USER=st0yardapp@gmail.com`
+4. `supabase secrets set GMAIL_APP_PASSWORD=the_16_char_app_password`
+
+Skip this step entirely if you don't want alert emails yet — the function still runs
+and tracks triggered alerts, it just won't send anything without these two secrets.
 
 ---
 
